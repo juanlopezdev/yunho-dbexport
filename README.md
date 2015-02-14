@@ -29,7 +29,7 @@ $objExport->connect();
 $fields = array(
   'id' => 'ID',
   'model_family' => array(
-    'label' => 'Modelo de veículo',
+    'label' => 'Modelo de vehículo',
     'mask' => '<a href="https://www.google.com.pe/#safe=off&q=[value]" target="_blank">Ver Modelo</a>'
   ),
   'color' => 'Color',

@@ -32,10 +32,10 @@ $fields = array(
 
 // Consulta SQL
 $objExport->query("
-  SELECT 
-    id, 
-    model_family, 
-    color, 
+  SELECT
+    id,
+    model_family,
+    color,
     COUNT(color) AS 'all_quantity',
     SUM(CASE WHEN state = 1 THEN 1 ELSE 0 END) AS 'current_quantity'
   FROM auto
