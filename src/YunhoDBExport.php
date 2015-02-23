@@ -122,7 +122,7 @@ class YunhoDBExport {
             }
           } else {
             // Por defecto
-            $table .= ' <td>' . utf8_decode($row[$key_field]) . '</td>';
+            $table .= ' <td>' . $row[$key_field] . '</td>';
           }
         }
 
