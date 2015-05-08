@@ -40,7 +40,7 @@ class YunhoDBExport {
   }
 
   /**
-   * Ejecutar consulta
+   * Ejecuta consulta
    * 
    * @param string $sql Consulta SQL
    * @return array
@@ -56,7 +56,7 @@ class YunhoDBExport {
   /**
    * Construir tabla
    * 
-   * @param array $fields Lista mapeada de camposde consulta
+   * @param array $fields Lista mapeada de campos para consulta
    * @param array $data Conjunto de datos de la consulta
    * @return string HTML Tabla
    */
@@ -80,6 +80,7 @@ class YunhoDBExport {
     $table .= '<table cellpadding="0" cellspacing="0" border="1">';
     $table .= '<tr style="background-color:#666666;color:#fff">';
     $table .= '<td> Nro. </td>';
+
 
     foreach ($fields as $field) {
       if (is_array($field)) {
@@ -114,10 +115,18 @@ class YunhoDBExport {
         // Columnas dinámicas
         foreach ($fields as $key_field => $field) {
           if (is_array($field)) {
-            // Mascara
+            // Máscara (mask)
             if (array_key_exists('mask', $field)) {
               $mask = $field['mask'];
               $value = str_replace('[value]', utf8_decode($row[$key_field]), $mask);
+              $table .= ' <td>' . $value . '</td>';
+            }
+
+            // Lista de valores (switch)
+            if (array_key_exists('switch', $field)) {
+              $switch = $field['switch'];
+              $key = $row[$key_field];
+              $value = $switch[$key];
               $table .= ' <td>' . $value . '</td>';
             }
           } else {
