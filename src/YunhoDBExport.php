@@ -115,6 +115,15 @@ class YunhoDBExport {
         // Columnas dinámicas
         foreach ($fields as $key_field => $field) {
           if (is_array($field)) {
+
+            // Artificio para la etiqueta (label)
+            if (count($field) == 1) {
+              if (array_key_exists('label', $field)) {
+                $value = $row[$key_field];
+                $table .= '<td>' . $value . '</td>';
+              }
+            }
+
             // Máscara (mask)
             if (array_key_exists('mask', $field)) {
               $mask = $field['mask'];
