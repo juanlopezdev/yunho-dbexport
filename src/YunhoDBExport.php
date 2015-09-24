@@ -165,7 +165,6 @@ class YunhoDBExport {
     header('Content-Disposition: attachment;filename=' . $name . '-key' . md5(date('g:i:s')) . '.xls');
 
     echo empty($table) ? $this->table : $table;
-    echo '<script type="text/javascript">window.close();</script>';
   }
 
   /**
