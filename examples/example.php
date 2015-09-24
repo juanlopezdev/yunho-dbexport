@@ -3,32 +3,37 @@
 // Importar libreria
 include '../src/YunhoDBExport.php';
 
-// Configuración
+// Configuración de base de datos
 $dbhost = 'localhost';
-$dbname = 'db_rutinalove';
+$dbname = 'dbtest';
 $dbuser = 'root';
-$dbuserpass = '';
+$dbuserpass = 'root';
 
-// Iniciar libreria
+// Asignar zona horaria por defecto
+date_default_timezone_set('America/Lima');
+
+// Inicializar librería
 $objExport = new YunhoDBExport($dbhost, $dbname, $dbuser, $dbuserpass);
 
-// Conectarse a la base de datos
+// Conectarse a la base de datos MySQL
 $objExport->connect();
 
-// Campos
+// Mapeo de campos para cabecera
 $fields = array(
-  'user_fbid' => array(
-    'label' => 'Facebook',
-    'mask' => '<a href="https://www.facebook.com/[value]" target="_blank">Perfil de facebook</a>'
-  ),
-  'user_dni' => 'Dni',
-  'user_name' => 'Nombres y Apellidos',
-  'user_email' => 'Email',
-  'user_recorddate' => 'Fecha de registro'
+    'id' => 'ID',
+    'model_family' => array(
+        'label' => 'Modelo de vehículo',
+        'mask' => '<a href="https://www.google.com.pe/#safe=off&q=[value]" target="_blank">Ver Modelo</a>'
+    ),
+    'color' => 'Color',
+    'registration_date' => array (
+        'label' => 'Fecha de Registro',
+        'dateformat' => 'd/m/Y H:i:s'
+    )
 );
 
-// Consulta
-$data = $objExport->query('SELECT * FROM t_user');
+// Consulta SQL
+$data = $objExport->query('SELECT * FROM auto');
 
 // Construir tabla
 $table = $objExport->buildTable($fields, $data);

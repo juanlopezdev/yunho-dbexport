@@ -129,6 +129,15 @@ class YunhoDBExport {
               $value = $switch[$key];
               $table .= ' <td>' . $value . '</td>';
             }
+
+            // Formato de fecha (dateformat)
+            if (array_key_exists('dateformat', $field)) {
+              $dateformat = $field['dateformat'];
+              $value = $row[$key_field];
+              // Convertir a formato de fecha
+              $value = date($dateformat, strtotime($value));
+              $table .= ' <td>' . $value . '</td>';
+            }
           } else {
             // Por defecto
             $table .= ' <td>' . $row[$key_field] . '</td>';

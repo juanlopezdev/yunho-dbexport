@@ -6,8 +6,8 @@ require '../src/YunhoDBExport.php';
 // Configuración de base de datos
 $dbhost = 'localhost';
 $dbname = 'dbtest';
-$dbuser = 'usr';
-$dbuserpass = 'pwd';
+$dbuser = 'root';
+$dbuserpass = 'root';
 
 // Asignar zona horaria por defecto
 date_default_timezone_set('America/Lima');
@@ -22,7 +22,7 @@ $objExport->connect();
 $fields = array(
   'id' => 'ID',
   'model_family' => array(
-    'label' => 'Modelo de veículo',
+    'label' => 'Modelo de vehículo',
     'mask' => '<a href="https://www.google.com.pe/#safe=off&q=[value]" target="_blank">Ver Modelo</a>'
   ),
   'color' => 'Color',
