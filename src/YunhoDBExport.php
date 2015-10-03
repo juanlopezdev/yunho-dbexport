@@ -3,66 +3,138 @@
 /**
  * YunhoDBExport
  * Librería para exportar a MS Excel desde MySQL
- * 
+ *
  * @version 1.0.0
  * @author Juan López <juanlopez.developer@gmail.com>
  * @link https://github.com/JuanLopezDev/YunhoDBExport
+ * @license MIT
  */
 class YunhoDBExport {
 
-  var $dbhost;
-  var $dbname;
-  var $dbuser;
-  var $dbuserpass;
-  var $data;
-  var $table;
-  var $dsn;
-  var $cnn;
+  var $_dbhost;
+  var $_dbname;
+  var $_dbuser;
+  var $_dbpassword;
+  var $_data;
+  var $_table;
+  var $_dsn;
+  var $_dbh;
+  var $_dbhex;
+  var $_is_connected;
+  var $_format;
 
-  function __construct($dbhost, $dbname, $dbuser, $dbuserpass) {
-    $this->dbhost = $dbhost;
-    $this->dbname = $dbname;
-    $this->dbuser = $dbuser;
-    $this->dbuserpass = $dbuserpass;
-    $this->dsn = 'mysql:dbname=' . $dbname . ';host=' . $dbhost;
+  /**
+   * Constructor de la clase
+   * @param string $_dbhost      Nombre del host
+   * @param string $_dbname      Nombre de la base de datos
+   * @param string $_dbuser      Nombre de usuario
+   * @param string $_dbpassword  Contraseña de usuario
+   */
+  function __construct($_dbhost, $_dbname, $_dbuser, $_dbpassword) {
+    $this->_dbhost = $_dbhost;
+    $this->_dbname = $_dbname;
+    $this->_dbuser = $_dbuser;
+    $this->_dbpassword = $_dbpassword;
+    $this->_dsn = 'mysql:dbname=' . $_dbname . ';host=' . $_dbhost;
+    $this->to_excel();
   }
 
   /**
-   * Conección a base de datos
+   * Conexión a base de datos
    * @return void
    */
   public function connect() {
     try {
-      $this->cnn = new PDO($this->dsn, $this->dbuser, $this->dbuserpass);
+      $this->_dbh = new PDO($this->_dsn, $this->_dbuser, $this->_dbpassword, array(
+				PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+				PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => TRUE,
+			));
+      $this->_dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      $this->_is_connected = TRUE;
     } catch (PDOException $e) {
-      die('Ha courrido un error al conectarse a la base de datos: ' . $e->getMessage());
+      $this->_dbhex = $e;
+      $this->_is_connected = FALSE;
     }
   }
 
   /**
-   * Ejecuta consulta
-   * 
+   * Verifica la conexión a la base de datos
+   * @return bool
+   */
+  public function is_connected() {
+    return $this->_is_connected;
+  }
+
+  /**
+   * Retorna el objeto PDO
+   * @return PDO
+   */
+  public function get_dbh() {
+    return $this->_dbh;
+  }
+
+  /**
+   * Retorna un objeto PDOException
+   * @return PDOException
+   */
+  public function get_error() {
+    return $this->_dbhex;
+  }
+
+  /**
+   * Retorna el tipo formato
+   * @return string
+   */
+  public function get_format() {
+    return $this->_format;
+  }
+
+  /**
+   * Retorna los datos de consulta
+   * @return array
+   */
+  public function get_data() {
+    return $this->_data;
+  }
+
+  /**
+   * Ejecuta consulta SQL
+   *
    * @param string $sql Consulta SQL
    * @return array
    */
   public function query($sql) {
-    $sth = $this->cnn->prepare($sql);
-    $sth->execute();
-    $data = $sth->fetchAll(PDO::FETCH_ASSOC);
-    $this->data = $data;
+    $data = NULL;
+
+    try {
+      if ($this->is_connected()) {
+        $sth = $this->_dbh->prepare($sql);
+        $sth->execute();
+        $data = $sth->fetchAll(PDO::FETCH_ASSOC);
+      }
+
+      $this->_data = $data;
+    } catch (PDOException $e) {
+      $this->_dbhex = $e;
+    }
+
     return $data;
   }
 
   /**
    * Construir tabla
-   * 
+   *
    * @param array $fields Lista mapeada de campos para consulta
    * @param array $data Conjunto de datos de la consulta
-   * @return string HTML Tabla
+   * @return string Tabla HTML
    */
-  public function buildTable($fields, $data = NULL) {
+  public function build_table($fields, $data = NULL) {
     $num = 0;
-    $data = empty($data) ? $this->data : $data;
+    $data = empty($data) ? $this->_data : $data;
+
+    if (empty($data)) {
+      return '';
+    }
 
     $table = '<table>';
     $table .= '<tr>';
@@ -75,23 +147,22 @@ class YunhoDBExport {
     $table .= '</table>';
 
     /*
-     * Cabecera tabla
+     * Cabecera de la tabla
      */
     $table .= '<table cellpadding="0" cellspacing="0" border="1">';
-    $table .= '<tr style="background-color:#666666;color:#fff">';
+    $table .= '<tr style="background-color:#777777;color:#fff">';
     $table .= '<td> Nro. </td>';
-
 
     foreach ($fields as $field) {
       if (is_array($field)) {
         // Etiqueta (label)
         if (array_key_exists('label', $field)) {
           $label = $field['label'];
-          $table .= '<td>' . utf8_decode($label) . '</td>';
+          $table .= '<td>' . $label . '</td>';
         }
       } else {
         // Por defecto
-        $table .= '<td> ' . utf8_decode($field) . '</td>';
+        $table .= '<td> ' . $field . '</td>';
       }
     }
 
@@ -127,7 +198,7 @@ class YunhoDBExport {
             // Máscara (mask)
             if (array_key_exists('mask', $field)) {
               $mask = $field['mask'];
-              $value = str_replace('[value]', utf8_decode($row[$key_field]), $mask);
+              $value = str_replace('[value]', $row[$key_field], $mask);
               $table .= ' <td>' . $value . '</td>';
             }
 
@@ -158,33 +229,53 @@ class YunhoDBExport {
 
       $table .= '</table>';
 
-      $this->table = $table;
+      if ($this->get_format() == 'xls') {
+        $table = mb_convert_encoding($table, 'UTF-16LE', 'UTF-8');
+        $table = "\xFF\xFE" . $table;
+      }
+
+      $this->_table = $table;
     }
 
     return $table;
   }
 
   /**
-   * Exportar a archivo MS Excel
-   * @param string $table Objeto Build Table
+   * Descarga los datos
+   * @param string $filename Nombre del archivo sin la extensión.
    * @return void
    */
-  public function exportToExcel($name = '', $table = NULL) {
-    header('Content-type: application/vnd.ms-excel');
-    header('Content-Disposition: attachment;filename=' . $name . '-key' . md5(date('g:i:s')) . '.xls');
-
-    echo empty($table) ? $this->table : $table;
+  public function download($filename = 'filename') {
+    header($this->_header);
+    header('Content-Disposition: attachment;filename=' . "$filename.$this->_format");
+    echo empty($table) ? $this->_table : $table;
   }
 
   /**
-   * Salida HMTL
-   * @param string $table Table HMTL
+   * Despliega los datos en el navegador
    * @return void
    */
-  public function outputHTML($table = NULL) {
-    header('Content-type: text/html; charset=utf-8');
-    $table = empty($table) ? $this->table : $table;
-    echo $table;
+  public function output() {
+    header($this->_header);
+    echo empty($table) ? $this->_table : $table;
+  }
+
+  /**
+   * Preparar salida MS Excel (.xls)
+   * @return void
+   */
+  public function to_excel() {
+    $this->_format = 'xls';
+    $this->_header = 'Content-type: application/vnd.ms-excel';
+  }
+
+  /**
+   * Preparar salida HTML
+   * @return void
+   */
+  public function to_html() {
+    $this->_format = 'html';
+    $this->_header = 'Content-type: text/html; charset=utf-8';
   }
 
 }
