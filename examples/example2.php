@@ -1,22 +1,30 @@
 <?php
 
+/**
+ * YunhoDBExport Example 2
+ * @package YunhoDBExport
+ * @version 1.0.0
+ * @author José Luis Quintana <quintana.io>
+ * @license MIT
+ */
+
 // Requerir librería
 require '../src/YunhoDBExport.php';
 
 // Configuración de base de datos
-$dbhost = 'localhost';
-$dbname = 'dbtest';
-$dbuser = 'root';
-$dbuserpass = 'root';
+$host = 'localhost';
+$name = 'dbtest';
+$user = 'root';
+$password = '';
 
 // Asignar zona horaria por defecto
 date_default_timezone_set('America/Lima');
 
 // Inicializar librería
-$objExport = new YunhoDBExport($dbhost, $dbname, $dbuser, $dbuserpass);
+$export = new YunhoDBExport($host, $name, $user, $password);
 
 // Conectarse a la base de datos MySQL
-$objExport->connect();
+$export->connect();
 
 // Mapeo de campos para cabecera
 $fields = array(
@@ -31,7 +39,7 @@ $fields = array(
 );
 
 // Consulta SQL
-$objExport->query("
+$export->query("
   SELECT
     id,
     model_family,
@@ -44,8 +52,16 @@ $objExport->query("
   ORDER BY color
 ");
 
-// Construir tabla de datos
-$objExport->buildTable($fields);
+// Formato MS Excel
+$export->to_excel();
 
-// Exportar a Excel
-$objExport->exportToExcel();
+// Construir tabla de datos
+$export->build_table($fields);
+
+// Descargar archivo .xls
+$export->download();
+
+// Control de errores
+if ($dbhex = $export->get_error()) {
+  die($dbhex->getMessage());
+}

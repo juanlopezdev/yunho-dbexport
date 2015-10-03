@@ -7,7 +7,7 @@ include '../src/YunhoDBExport.php';
 $dbhost = 'localhost';
 $dbname = 'dbtest';
 $dbuser = 'root';
-$dbuserpass = 'root';
+$dbuserpass = 'jose25';
 
 // Asignar zona horaria por defecto
 date_default_timezone_set('America/Lima');
@@ -36,9 +36,12 @@ $fields = array(
 $data = $objExport->query('SELECT * FROM auto');
 
 // Construir tabla
-$table = $objExport->buildTable($fields, $data);
+$table = $objExport->build_table($fields, $data);
 
-//Exportar a Excel
-$objExport->exportToExcel('econopticas', $table);
+// Exportar a Excel
+$objExport->to_excel('econopticas', $table);
+
+// Descargar archivo .xls
+$objExport->to_excel('econopticas', $table);
 
 die();

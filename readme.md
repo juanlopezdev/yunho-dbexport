@@ -11,19 +11,19 @@
 require '../src/YunhoDBExport.php';
 
 // Configuración de base de datos
-$dbhost = 'localhost';
-$dbname = 'dbtest';
-$dbuser = 'usr';
-$dbuserpass = 'pwd';
+$host = 'localhost';
+$name = 'dbtest';
+$user = 'usr';
+$password = 'pwd';
 
 // Asignar zona horaria por defecto
 date_default_timezone_set('America/Lima');
 
 // Inicializar librería
-$objExport = new YunhoDBExport($dbhost, $dbname, $dbuser, $dbuserpass);
+$export = new YunhoDBExport($host, $name, $user, $password);
 
 // Conectarse a la base de datos MySQL
-$objExport->connect();
+$export->connect();
 
 // Mapeo de campos para cabecera
 $fields = array(
@@ -38,11 +38,11 @@ $fields = array(
 );
 
 // Consulta SQL
-$objExport->query("
-  SELECT 
-    id, 
-    model_family, 
-    color, 
+$export->query("
+  SELECT
+    id,
+    model_family,
+    color,
     COUNT(color) AS 'all_quantity',
     SUM(CASE WHEN state = 1 THEN 1 ELSE 0 END) AS 'current_quantity'
   FROM auto
@@ -51,11 +51,19 @@ $objExport->query("
   ORDER BY color
 ");
 
-// Construir tabla de datos
-$objExport->buildTable($fields);
+// Formato MS Excel
+$export->to_excel();
 
-// Exportar a Excel
-$objExport->exportToExcel();
+// Construir tabla de datos
+$export->build_table($fields);
+
+// Descargar
+$export->download();
+
+// Control de errores
+if ($dbhex = $export->get_error()) {
+  die($dbhex->getMessage());
+}
 
 ```
 
