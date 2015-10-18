@@ -3,7 +3,7 @@
 /**
  * PHPUnit / YunhoDBExport Test Class
  * @package YunhoDBExport
- * @version 1.0.0
+ * @version 0.1.0
  * @author José Luis Quintana <quintana.io>
  * @license MIT
  */
@@ -17,12 +17,14 @@ class YunhoDBExportTest extends PHPUnit_Framework_TestCase {
     $host = 'localhost';
     $dbname = 'dbtest';
     $username = 'root';
-    $password = 'jose25';
+    $password = '';
 
     $export = new YunhoDBExport($host, $dbname, $username, $password);
     $export->connect();
 
-    $this->assertTrue($export->is_connected());
+    $connected = $export->is_connected();
+
+    $this->assertTrue($connected);
 
     return $export;
   }
@@ -100,6 +102,18 @@ class YunhoDBExportTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * To HTML test
+   * @depends testConnection
+   */
+  public function testToHTML($export) {
+    $export->to_html();
+    $format = $export->get_format();
+
+    $this->assertNotEmpty($format);
+    $this->assertEquals($format, 'html');
+  }
+
+  /**
    * Build Table test
    * @depends testConnection
    */
@@ -126,7 +140,7 @@ class YunhoDBExportTest extends PHPUnit_Framework_TestCase {
    * Get Data test
    * @depends testBuildTable
    */
-  public function testgetData($export) {
+  public function testGetData($export) {
     $data = $export->get_data();
 
     $this->assertNotEmpty($data);

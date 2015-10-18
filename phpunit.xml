@@ -8,7 +8,7 @@
 
   <testsuites>
     <testsuite name="YunhoDBExport Test Suite">
-      <directory>./test</directory>
+      <directory>./test/</directory>
     </testsuite>
   </testsuites>
 
