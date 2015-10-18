@@ -4,7 +4,7 @@
  * YunhoDBExport
  * Librería para exportar a MS Excel desde MySQL
  *
- * @version 1.0.0
+ * @version 0.1.0
  * @author Juan López <juanlopez.developer@gmail.com>
  * @link https://github.com/JuanLopezDev/YunhoDBExport
  * @license MIT

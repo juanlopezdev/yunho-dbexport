@@ -1,4 +1,4 @@
-# YunhoDBExport
+# YunhoDBExport [![Build Status](https://travis-ci.org/juanlopezdev/YunhoDBExport.svg)](https://travis-ci.org/juanlopezdev/YunhoDBExport)
 
 > Librería para exportar a MS Excel desde MySQL
 
