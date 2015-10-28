@@ -5,13 +5,11 @@
     <var name="db_username" value="root"/>
     <var name="db_password" value=""/>
   </php>
-
   <testsuites>
     <testsuite name="YunhoDBExport Test Suite">
       <directory>./test/</directory>
     </testsuite>
   </testsuites>
-
   <filter>
     <whitelist>
       <directory>./</directory>
@@ -20,5 +18,4 @@
       </exclude>
     </whitelist>
   </filter>
-
 </phpunit>
