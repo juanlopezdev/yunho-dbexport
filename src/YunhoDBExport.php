@@ -25,17 +25,17 @@ class YunhoDBExport {
 
   /**
    * Constructor de la clase
-   * @param string $_dbhost      Nombre del host
-   * @param string $_dbname      Nombre de la base de datos
-   * @param string $_dbuser      Nombre de usuario
-   * @param string $_dbpassword  Contraseña de usuario
+   * @param string $dbhost      Nombre del host
+   * @param string $dbname      Nombre de la base de datos
+   * @param string $dbuser      Nombre de usuario
+   * @param string $dbpassword  Contraseña de usuario
    */
-  function __construct($_dbhost, $_dbname, $_dbuser, $_dbpassword) {
-    $this->_dbhost = $_dbhost;
-    $this->_dbname = $_dbname;
-    $this->_dbuser = $_dbuser;
-    $this->_dbpassword = $_dbpassword;
-    $this->_dsn = 'mysql:dbname=' . $_dbname . ';host=' . $_dbhost;
+  function __construct($dbhost = '', $dbname = '', $dbuser = '', $dbpassword = '') {
+    $this->_dbhost = $dbhost;
+    $this->_dbname = $dbname;
+    $this->_dbuser = $dbuser;
+    $this->_dbpassword = $dbpassword;
+    $this->_dsn = 'mysql:dbname=' . $dbname . ';host=' . $dbhost;
     $this->to_excel();
   }
 
@@ -46,9 +46,9 @@ class YunhoDBExport {
   public function connect() {
     try {
       $this->_dbh = new PDO($this->_dsn, $this->_dbuser, $this->_dbpassword, array(
-				PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
-				PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => TRUE,
-			));
+        PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+        PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => TRUE,
+      ));
       $this->_dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       $this->_is_connected = TRUE;
     } catch (PDOException $e) {
@@ -95,6 +95,24 @@ class YunhoDBExport {
    */
   public function get_data() {
     return $this->_data;
+  }
+
+  /**
+   * Asigna un objeto PDO existente
+   * @param PDO $dbh      Objecto PDO
+   * @return void
+   */
+  public function set_dbh($dbh) {
+    $this->_dbh = ($dbh instanceof PDO) ? $dbh : NULL;
+  }
+
+  /**
+   * Asigna array de datos
+   * @param array $data Array de datos
+   * @return void
+   */
+  public function set_data($data) {
+    $this->_data = $data;
   }
 
   /**
