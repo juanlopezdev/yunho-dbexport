@@ -67,5 +67,42 @@ if ($dbhex = $export->get_error()) {
 
 ```
 
+### CodeIgniter 3
+Ejemplo de uso en CodeIgniter 3
+
+En controller:
+
+```php
+
+<?php
+// Cargar la librería
+$this->load->library('YunhoDBExport');
+
+// Array de datos
+$data = $this->user_model->find();
+
+$fields = array(
+  'firstname' => 'Nombres',
+  'lastname' => 'Apellidos',
+  'email' => 'Email',
+  'dni' => 'DNI',
+  'phone' => 'Teléfono',
+  'sex' => 'Sexo',
+  'address' => 'Dirección',
+  'phone' => 'Phone',
+  'province' => 'Provincia',
+  'city' => 'Ciudad',
+  'district' => 'Distrito',
+  'registered' => 'Registrado'
+);
+
+$export = new YunhoDBExport();
+$export->set_data($data);
+$export->to_excel();
+$export->build_table($fields);
+$export->download('reporte');
+
+```
+
 ## Licencia
 MIT
