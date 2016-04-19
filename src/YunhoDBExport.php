@@ -201,7 +201,7 @@ class YunhoDBExport {
         $table .= '<tr style="background-color:' . $bgcolor . ';">';
         $table .= ' <td>' . $num . '</td>';
 
-        // Columnas dinámicas
+        // Filas con validaciones
         foreach ($fields as $key_field => $field) {
           if (is_array($field)) {
 
@@ -213,19 +213,29 @@ class YunhoDBExport {
               }
             }
 
-            // Máscara (mask)
-            if (array_key_exists('mask', $field)) {
-              $mask = $field['mask'];
-              $value = str_replace('[value]', $row[$key_field], $mask);
-              $table .= ' <td>' . $value . '</td>';
-            }
-
             // Lista de valores (switch)
             if (array_key_exists('switch', $field)) {
               $switch = $field['switch'];
-              $key = $row[$key_field];
-              $value = $switch[$key];
-              $table .= ' <td>' . $value . '</td>';
+              $value = $row[$key_field];
+
+              // Valores vacíos
+              if (array_key_exists('empty', $switch)) {
+                if (empty($value)) {
+                  $value = $switch['empty'];
+                  $table .= ' <td>' . $value . '</td>';
+                }
+              }
+            }
+
+            // Máscara (mask)
+            if (array_key_exists('mask', $field)) {
+              $mask = $field['mask'];
+              $value = $row[$key_field];
+
+              if (!empty($value)) {
+                $value = str_replace('[value]', $value, $mask);
+                $table .= ' <td>' . $value . '</td>';
+              }
             }
 
             // Formato de fecha (dateformat)
