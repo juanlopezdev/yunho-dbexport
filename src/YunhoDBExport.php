@@ -218,12 +218,17 @@ class YunhoDBExport {
               $switch = $field['switch'];
               $value = $row[$key_field];
 
-              // Valores vacíos
-              if (array_key_exists('empty', $switch)) {
+              // Valores vacíos (empty)
+              if (is_array($switch) && array_key_exists('empty', $switch)) {
                 if (empty($value)) {
                   $value = $switch['empty'];
                   $table .= ' <td>' . $value . '</td>';
                 }
+              }
+
+              // Valores y claves asociadas (diferentes de null o empty)
+              if (is_array($switch) && array_key_exists($value, $switch)) {
+                $table .= ' <td>' . $switch[$value] . '</td>';
               }
             }
 
