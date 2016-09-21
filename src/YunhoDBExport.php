@@ -2,9 +2,9 @@
 
 /**
  * YunhoDBExport
- * Librería para exportar a MS Excel desde MySQL
+ * Librería PHP para exportar datos a MS Excel desde MySQL.
  *
- * @version 0.1.0
+ * @version 0.1.3
  * @author Juan López <juanlopez.developer@gmail.com>
  * @link https://github.com/JuanLopezDev/YunhoDBExport
  * @license MIT
@@ -281,7 +281,7 @@ class YunhoDBExport {
   public function download($filename = 'filename') {
     header($this->_header);
     header('Content-Disposition: attachment;filename=' . "$filename.$this->_format");
-    echo empty($table) ? $this->_table : $table;
+    echo $this->_table;
   }
 
   /**
@@ -290,7 +290,7 @@ class YunhoDBExport {
    */
   public function output() {
     header($this->_header);
-    echo empty($table) ? $this->_table : $table;
+    echo $this->_table;
   }
 
   /**
