@@ -4,7 +4,7 @@
  * YunhoDBExport
  * Librería PHP para exportar datos a MS Excel desde MySQL.
  *
- * @version 0.1.3
+ * @version 0.1.4
  * @author Juan López <juanlopez.developer@gmail.com>
  * @link https://github.com/JuanLopezDev/YunhoDBExport
  * @license MIT
@@ -247,13 +247,12 @@ class YunhoDBExport {
             if (array_key_exists('dateformat', $field)) {
               $dateformat = $field['dateformat'];
               $value = $row[$key_field];
-              // Convertir a formato de fecha
               $value = date($dateformat, strtotime($value));
               $table .= ' <td>' . $value . '</td>';
             }
           } else {
             // Por defecto
-            $table .= ' <td>' . $row[$key_field] . '</td>';
+            $table .= ' <td>&nbsp;' . $row[$key_field] . '</td>';
           }
         }
 

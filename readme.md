@@ -26,7 +26,7 @@ $export = new YunhoDBExport($host, $name, $user, $password);
 $export->connect();
 
 // Mapeo de campos para cabecera
-$fields = array(
+$campos = array(
   'id' => 'ID',
   'model_family' => array(
     'label' => 'Modelo de vehículo',
@@ -55,7 +55,7 @@ $export->query("
 $export->to_excel();
 
 // Construir tabla de datos
-$export->build_table($fields);
+$export->build_table($campos);
 
 // Descargar
 $export->download();
@@ -64,8 +64,60 @@ $export->download();
 if ($dbhex = $export->get_error()) {
   die($dbhex->getMessage());
 }
-
 ```
+
+## Formato de campos
+
+### label
+
+````php
+<?php
+
+$campos = array(
+  'fecha_registro' => array(
+    'label' => 'Registrado'
+  )
+)
+````
+
+### mask
+
+````php
+<?php
+
+$campos = array(
+  'facebook_id' => array(
+    'mask' => '<a href="https://facebook.com/[value]" target="_blank">Ver perfil</a>',
+  )
+)
+````
+
+### switch
+````php
+<?php
+
+$campos = array(
+  'sexo' => array(
+    'label' => 'Sexo',
+    'switch' => array(
+      '0' => 'Femenino',
+      '1' => 'Masculino'
+    )
+  )
+)
+````
+
+### dateformat
+````php
+<?php
+
+$campos = array(
+  'fecha_registro' => array(
+    'label' => 'Registrado',
+    'dateformat' => 'd/m/Y H:i:s',
+  )
+)
+````
 
 ### CodeIgniter 3
 Ejemplo de uso en CodeIgniter 3
@@ -101,7 +153,6 @@ $export->set_data($data);
 $export->to_excel();
 $export->build_table($fields);
 $export->download('reporte');
-
 ```
 
 ## Licencia
